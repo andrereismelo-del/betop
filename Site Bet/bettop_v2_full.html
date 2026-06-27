@@ -1,0 +1,559 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#f0a500;--gold2:#d4920a;--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#2d333b;--border:#30363d;--text:#e6edf3;--text2:#c9d1d9;--text3:#8b949e;--text4:#6e7681;--green:#3fb950;--red:#f85149;--blue:#58a6ff;--live:#e3342f}
+html,body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:600px}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 14px;height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{font-size:18px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.logo span{color:var(--gold)}
+.search-bar{flex:1;max-width:280px;display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0 10px;gap:6px;height:34px}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%}
+.search-bar input::placeholder{color:var(--text4)}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-s{background:transparent;border:1px solid var(--border);color:var(--text2);padding:6px 13px;border-radius:6px;font-size:12px;cursor:pointer;white-space:nowrap}
+.btn-s:hover{border-color:var(--blue);color:var(--blue)}
+.btn-gold{background:var(--gold);border:none;color:#000;padding:6px 13px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-gold:hover{background:var(--gold2)}
+.avatar{width:30px;height:30px;background:#1f3044;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;border:1px solid var(--border)}
+.balance-chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer}
+.sportnav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 14px}
+.sportnav::-webkit-scrollbar{display:none}
+.snav{padding:10px 12px;font-size:12px;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;transition:.12s}
+.snav.on{color:var(--gold);border-bottom-color:var(--gold)}
+.snav:hover{color:var(--text)}
+.body{display:flex;flex:1;min-height:0}
+.sidebar{width:200px;background:var(--bg2);border-right:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+@media(max-width:720px){.sidebar,.betslip{display:none!important}.body{flex-direction:column}}
+.stitle{font-size:10px;color:var(--text4);font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:8px 8px 4px}
+.sitem{padding:8px 10px;border-radius:5px;cursor:pointer;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;transition:.12s}
+.sitem:hover{background:var(--bg3);color:#fff}
+.sitem.on{background:var(--bg3);color:var(--gold)}
+.sitem i{font-size:14px;width:16px;text-align:center}
+.lbadge{background:var(--live);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:auto}
+.content{flex:1;overflow-y:auto;padding:14px}
+.betslip{width:250px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column}
+.bs-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.bs-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.bs-count{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+.bs-tabs{display:flex;border-bottom:1px solid var(--border)}
+.bs-tab{flex:1;padding:8px;font-size:11px;color:var(--text3);text-align:center;cursor:pointer;border-bottom:2px solid transparent}
+.bs-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.bs-body{flex:1;overflow-y:auto;padding:10px}
+.bs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:120px;color:var(--text4);font-size:12px;text-align:center}
+.bet-item{background:var(--bg3);border-radius:6px;padding:10px;margin-bottom:8px;position:relative;border:1px solid var(--border)}
+.bet-remove{position:absolute;top:7px;right:8px;background:none;border:none;color:var(--text4);cursor:pointer;font-size:15px;line-height:1}
+.bet-remove:hover{color:var(--red)}
+.bet-match{font-size:10px;color:var(--text3);margin-bottom:2px}
+.bet-sel{font-size:12px;color:var(--text);font-weight:500;margin-bottom:2px;padding-right:16px}
+.bet-odd{font-size:12px;color:var(--gold);font-weight:700}
+.bs-footer{padding:10px 12px;border-top:1px solid var(--border)}
+.stake-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.stake-label{font-size:11px;color:var(--text3);width:52px}
+.stake-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;color:var(--text);text-align:right;font-family:inherit}
+.stake-inp:focus{outline:none;border-color:var(--blue)}
+.quick-stakes{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.qs{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:11px;color:var(--text2);cursor:pointer}
+.qs:hover{border-color:var(--gold);color:var(--gold)}
+.pwin-row{display:flex;justify-content:space-between;margin-bottom:10px}
+.pwin-l{font-size:11px;color:var(--text3)}
+.pwin-v{font-size:13px;font-weight:700;color:var(--green)}
+.btn-bet-main{width:100%;background:var(--gold);border:none;color:#000;padding:10px;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer}
+.btn-bet-main:hover{background:var(--gold2)}
+.btn-bet-main:disabled{background:var(--bg4);color:var(--text4);cursor:not-allowed}
+.page{display:none}
+.page.on{display:block}
+.hero-banner{background:#1a2332;border:1px solid #1f3a5c;border-radius:10px;padding:20px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hero-banner h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
+.hero-banner p{font-size:12px;color:var(--text3);margin-bottom:12px}
+.hero-right{background:#1f3044;border:1px solid #1f6feb;border-radius:8px;padding:12px 16px;text-align:center;flex-shrink:0}
+.hero-right .amt{font-size:24px;font-weight:800;color:var(--blue)}
+.hero-right .lbl{font-size:10px;color:var(--text3)}
+.sec-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.live-dot{width:7px;height:7px;background:var(--live);border-radius:50%;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tab-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.tab{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 11px;font-size:11px;color:var(--text3);cursor:pointer;white-space:nowrap}
+.tab.on{background:#1f3044;border-color:var(--blue);color:var(--blue)}
+.games-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:18px}
+.gc{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:.12s}
+.gc:hover{border-color:var(--bg4);transform:translateY(-1px)}
+.gc-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.gc-league{font-size:10px;color:var(--text3)}
+.gc-time{font-size:10px;color:var(--blue)}
+.gc-time.live{color:var(--live);font-weight:700}
+.teams-block{margin-bottom:10px}
+.team-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0}
+.team-name{font-size:12px;color:var(--text);font-weight:500}
+.team-score{font-size:13px;font-weight:700;color:#fff}
+.odds-row{display:flex;gap:5px}
+.odd{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:7px 3px;text-align:center;cursor:pointer;transition:.12s}
+.odd:hover{background:var(--bg4);border-color:var(--blue)}
+.odd.sel{background:#1a2b1a;border-color:var(--green)}
+.odd .ol{font-size:9px;color:var(--text4);display:block;margin-bottom:1px}
+.odd .ov{font-size:13px;font-weight:700;color:var(--text)}
+.odd.sel .ov{color:var(--green)}
+.cashout-bar{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cashout-info{flex:1}
+.cashout-match{font-size:11px;color:var(--text3);margin-bottom:2px}
+.cashout-sel{font-size:12px;color:var(--text);font-weight:500;margin-bottom:2px}
+.cashout-status{font-size:11px}
+.cashout-status.win{color:var(--green)}
+.cashout-status.live{color:var(--gold)}
+.cashout-status.lost{color:var(--red)}
+.btn-cashout{background:var(--gold);border:none;color:#000;padding:6px 12px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-cashout:hover{background:var(--gold2)}
+.btn-cashout:disabled{background:var(--bg4);color:var(--text4);cursor:not-allowed}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px}
+.stat-card .sc-label{font-size:10px;color:var(--text3);margin-bottom:4px}
+.stat-card .sc-val{font-size:20px;font-weight:700}
+.stat-card .sc-val.green{color:var(--green)}
+.stat-card .sc-val.red{color:var(--red)}
+.stat-card .sc-val.gold{color:var(--gold)}
+.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.hist-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hist-status.win{background:var(--green)}
+.hist-status.lost{background:var(--red)}
+.hist-status.open{background:var(--gold)}
+.hist-info{flex:1}
+.hist-match{font-size:11px;color:var(--text3)}
+.hist-sel{font-size:12px;color:var(--text);font-weight:500}
+.hist-right{text-align:right}
+.hist-stake{font-size:10px;color:var(--text3)}
+.hist-result{font-size:12px;font-weight:700}
+.hist-result.win{color:var(--green)}
+.hist-result.lost{color:var(--red)}
+.hist-result.open{color:var(--gold)}
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px}
+.promo-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer}
+.promo-card:hover{border-color:var(--gold)}
+.promo-icon{width:36px;height:36px;background:#1f3044;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:18px}
+.promo-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.promo-desc{font-size:11px;color:var(--text3);margin-bottom:8px}
+.promo-tag{display:inline-block;background:#1a2b0a;border:1px solid #3b6d11;color:#7ab648;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.modal-wrap{background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px;min-height:400px}
+.modal-wrap.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;width:100%;max-width:360px}
+.modal-box h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0}
+.modal-close:hover{color:#fff}
+.field-group{margin-bottom:10px}
+.field-group label{display:block;font-size:11px;color:var(--text3);margin-bottom:4px}
+.field-group input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-size:13px;color:var(--text);font-family:inherit}
+.field-group input:focus{outline:none;border-color:var(--blue)}
+.amount-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.achip{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 11px;font-size:12px;color:var(--text2);cursor:pointer}
+.achip:hover,.achip.on{border-color:var(--gold);color:var(--gold);background:#1a1e0d}
+.pix-code{background:var(--bg3);border-radius:5px;padding:10px;font-size:10px;color:var(--text3);word-break:break-all;font-family:monospace;margin-bottom:10px}
+.toast{position:fixed;bottom:18px;right:18px;color:#fff;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:260px}
+.toast.show{opacity:1}
+.resp-menu{display:none}
+@media(max-width:720px){.resp-menu{display:flex;background:var(--bg2);border-top:1px solid var(--border);padding:6px 0;justify-content:space-around}.resp-menu-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--text3);cursor:pointer;padding:4px 0}.resp-menu-item.on{color:var(--gold)}.resp-menu-item i{font-size:18px}}
+.settings-grid{display:grid;gap:8px}
+.setting-row{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:12px;display:flex;align-items:center;justify-content:space-between}
+.setting-label{font-size:13px;color:var(--text);font-weight:500}
+.setting-sub{font-size:11px;color:var(--text3)}
+.toggle{width:38px;height:20px;background:var(--bg3);border-radius:10px;border:none;cursor:pointer;position:relative;transition:.2s}
+.toggle.on{background:var(--gold)}
+.toggle::after{content:'';width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:.2s}
+.toggle.on::after{left:20px}
+.limits-section{margin-top:12px}
+.limit-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.limit-row label{font-size:12px;color:var(--text2);width:130px}
+.limit-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:12px;color:var(--text);font-family:inherit}
+.limit-row input:focus{outline:none;border-color:var(--blue)}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><i class="ti ti-ball-football" aria-hidden="true" style="font-size:18px"></i>Bet<span>Top</span></div>
+    <div class="search-bar">
+      <i class="ti ti-search" aria-hidden="true" style="font-size:14px;color:#6e7681"></i>
+      <input type="text" placeholder="Buscar times, ligas, jogos...">
+    </div>
+    <div class="topbar-right" id="topbar-right">
+      <button class="btn-s" onclick="openModal('login-modal')">Entrar</button>
+      <button class="btn-gold" onclick="openModal('register-modal')">Cadastrar</button>
+    </div>
+  </div>
+
+  <div class="sportnav">
+    <div class="snav on" onclick="setSnav(this,'home')"><i class="ti ti-home" aria-hidden="true"></i> Início</div>
+    <div class="snav" onclick="setSnav(this,'fut')"><i class="ti ti-ball-football" aria-hidden="true"></i> Futebol</div>
+    <div class="snav" onclick="setSnav(this,'bask')"><i class="ti ti-ball-basketball" aria-hidden="true"></i> Basquete</div>
+    <div class="snav" onclick="setSnav(this,'tenis')"><i class="ti ti-ball-tennis" aria-hidden="true"></i> Tênis</div>
+    <div class="snav" onclick="setSnav(this,'mma')"><i class="ti ti-trophy" aria-hidden="true"></i> MMA</div>
+    <div class="snav" onclick="setSnav(this,'esports')"><i class="ti ti-device-gamepad-2" aria-hidden="true"></i> E-Sports</div>
+    <div class="snav" onclick="setSnav(this,'promos')"><i class="ti ti-gift" aria-hidden="true"></i> Promoções</div>
+  </div>
+
+  <div class="body">
+    <aside class="sidebar">
+      <div class="stitle">Ao vivo</div>
+      <div class="sitem on" onclick="setSitem(this)"><i class="ti ti-layout-grid"></i> Todos <span class="lbadge">14</span></div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-ball-football"></i> Futebol <span class="lbadge">8</span></div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-ball-basketball"></i> Basquete <span class="lbadge">4</span></div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-ball-tennis"></i> Tênis <span class="lbadge">2</span></div>
+      <div class="stitle">Ligas</div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-shield-star"></i> Brasileirão A</div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-star"></i> Champions League</div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-shield"></i> Premier League</div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-shield"></i> La Liga</div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-shield"></i> Bundesliga</div>
+      <div class="sitem" onclick="setSitem(this)"><i class="ti ti-shield"></i> Serie A</div>
+      <div class="stitle">Minha conta</div>
+      <div class="sitem" onclick="goPage('hist-page')"><i class="ti ti-history"></i> Histórico</div>
+      <div class="sitem" onclick="goPage('profile-page')"><i class="ti ti-user"></i> Perfil</div>
+      <div class="sitem" onclick="goPage('settings-page')"><i class="ti ti-settings"></i> Configurações</div>
+    </aside>
+
+    <div class="content" id="main-content">
+
+      <div class="page on" id="home-page">
+        <div class="hero-banner">
+          <div>
+            <h2>Bônus de boas-vindas</h2>
+            <p>Deposite e ganhe 100% no primeiro depósito. Aposte com responsabilidade.</p>
+            <button class="btn-gold" onclick="openModal('deposit-modal')">Depositar agora</button>
+          </div>
+          <div class="hero-right">
+            <div class="amt">R$500</div>
+            <div class="lbl">bônus máximo</div>
+          </div>
+        </div>
+
+        <div class="tab-row">
+          <div class="tab on" onclick="setTab(this)">Ao vivo</div>
+          <div class="tab" onclick="setTab(this)">Hoje</div>
+          <div class="tab" onclick="setTab(this)">Amanhã</div>
+          <div class="tab" onclick="setTab(this)">Esta semana</div>
+        </div>
+
+        <div class="sec-title"><span class="live-dot"></span> Partidas ao vivo</div>
+        <div class="games-grid" id="games-grid"></div>
+
+        <div class="sec-title"><i class="ti ti-calendar" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Em breve</div>
+        <div class="games-grid" id="games-grid-soon"></div>
+      </div>
+
+      <div class="page" id="hist-page">
+        <div class="sec-title"><i class="ti ti-history" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Minhas apostas</div>
+        <div class="tab-row">
+          <div class="tab on" onclick="setTab(this)">Todas</div>
+          <div class="tab" onclick="setTab(this)">Abertas</div>
+          <div class="tab" onclick="setTab(this)">Ganhas</div>
+          <div class="tab" onclick="setTab(this)">Perdidas</div>
+        </div>
+        <div id="hist-list"></div>
+      </div>
+
+      <div class="page" id="profile-page">
+        <div class="sec-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Meu perfil</div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:14px">
+          <div style="width:52px;height:52px;background:#1f3044;border-radius:50%;display:flex;align-items:center;justify-content:font-size:13px;justify-content:center;font-size:15px;font-weight:700;color:var(--blue)">JV</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--text)">João Vitor</div>
+            <div style="font-size:12px;color:var(--text3)">joao.vitor@email.com</div>
+            <div style="font-size:11px;color:var(--gold);margin-top:2px">Membro desde Jan 2025</div>
+          </div>
+          <div style="margin-left:auto">
+            <div style="background:#1a2b0a;border:1px solid #3b6d11;color:#7ab648;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px">KYC Verificado</div>
+          </div>
+        </div>
+        <div class="profile-grid" id="profile-stats"></div>
+        <div class="sec-title" style="margin-top:4px"><i class="ti ti-wallet" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Cashout disponível</div>
+        <div id="cashout-list"></div>
+      </div>
+
+      <div class="page" id="settings-page">
+        <div class="sec-title"><i class="ti ti-settings" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Configurações</div>
+        <div class="settings-grid">
+          <div class="setting-row">
+            <div><div class="setting-label">Notificações de odds</div><div class="setting-sub">Alertas quando odds mudarem</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Aceitar odds mudadas</div><div class="setting-sub">Auto-aceitar durante ao vivo</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Confirmação de aposta</div><div class="setting-sub">Pedir confirmação antes de apostar</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Modo responsável</div><div class="setting-sub">Ativar limites de depósito e perda</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+        <div class="limits-section">
+          <div class="sec-title" style="margin-top:12px"><i class="ti ti-shield-lock" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Jogo responsável</div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div class="limit-row"><label>Limite diário (R$)</label><input type="number" value="200" placeholder="Ex: 200"></div>
+            <div class="limit-row"><label>Limite semanal (R$)</label><input type="number" value="500" placeholder="Ex: 500"></div>
+            <div class="limit-row"><label>Limite mensal (R$)</label><input type="number" value="2000" placeholder="Ex: 2000"></div>
+            <button class="btn-gold" style="width:100%;margin-top:6px;padding:9px" onclick="showToast('Limites salvos','ok')">Salvar limites</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="promos-page">
+        <div class="sec-title"><i class="ti ti-gift" aria-hidden="true" style="font-size:14px;color:#8b949e"></i> Promoções</div>
+        <div class="promo-grid">
+          <div class="promo-card"><div class="promo-icon">🎁</div><div class="promo-title">Bônus de boas-vindas</div><div class="promo-desc">100% no primeiro depósito até R$500</div><span class="promo-tag">Novo usuário</span></div>
+          <div class="promo-card"><div class="promo-icon">⚽</div><div class="promo-title">Aposta sem risco</div><div class="promo-desc">Devolução de até R$100 na primeira aposta perdida</div><span class="promo-tag">Limitado</span></div>
+          <div class="promo-card"><div class="promo-icon">🏆</div><div class="promo-title">Odds turbinadas</div><div class="promo-desc">Odds especiais nos grandes jogos de Champions</div><span class="promo-tag">Semanal</span></div>
+          <div class="promo-card"><div class="promo-icon">💰</div><div class="promo-title">Cashback semanal</div><div class="promo-desc">5% de cashback nas perdas da semana</div><span class="promo-tag">Todo domingo</span></div>
+          <div class="promo-card"><div class="promo-icon">🎯</div><div class="promo-title">Acumulador boost</div><div class="promo-desc">+10% de bônus em apostas com 4+ seleções</div><span class="promo-tag">Sempre ativo</span></div>
+          <div class="promo-card"><div class="promo-icon">📱</div><div class="promo-title">App exclusivo</div><div class="promo-desc">Deposite pelo app e ganhe R$20 em aposta grátis</div><span class="promo-tag">App only</span></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="betslip" id="betslip">
+      <div class="bs-head">
+        <div class="bs-title"><i class="ti ti-ticket" aria-hidden="true" style="font-size:15px"></i> Bilhete <span class="bs-count" id="bs-count">0</span></div>
+        <button style="background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer" onclick="clearBets()">Limpar</button>
+      </div>
+      <div class="bs-tabs">
+        <div class="bs-tab on">Simples</div>
+        <div class="bs-tab">Múltipla</div>
+        <div class="bs-tab">Sistema</div>
+      </div>
+      <div class="bs-body" id="bs-body">
+        <div class="bs-empty" id="bs-empty"><i class="ti ti-ticket" aria-hidden="true" style="font-size:28px;color:#30363d"></i><span>Selecione uma odds<br>para apostar</span></div>
+      </div>
+      <div class="bs-footer" id="bs-footer" style="display:none">
+        <div class="quick-stakes">
+          <div class="qs" onclick="setStake(5)">R$5</div>
+          <div class="qs" onclick="setStake(10)">R$10</div>
+          <div class="qs" onclick="setStake(25)">R$25</div>
+          <div class="qs" onclick="setStake(50)">R$50</div>
+          <div class="qs" onclick="setStake(100)">R$100</div>
+        </div>
+        <div class="stake-row">
+          <span class="stake-label">Valor (R$)</span>
+          <input class="stake-inp" type="number" id="stake-inp" value="10" min="1" oninput="calcWin()">
+        </div>
+        <div class="pwin-row">
+          <span class="pwin-l">Odd total</span>
+          <span style="font-size:12px;color:var(--gold);font-weight:700" id="total-odd">1.00</span>
+        </div>
+        <div class="pwin-row">
+          <span class="pwin-l">Possível retorno</span>
+          <span class="pwin-v" id="pwin">R$ 0,00</span>
+        </div>
+        <button class="btn-bet-main" id="btn-bet" onclick="placeBet()">Confirmar aposta</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="resp-menu">
+    <div class="resp-menu-item on" onclick="goPage('home-page',this)"><i class="ti ti-home"></i><span>Início</span></div>
+    <div class="resp-menu-item" onclick="goPage('hist-page',this)"><i class="ti ti-history"></i><span>Apostas</span></div>
+    <div class="resp-menu-item" onclick="openModal('deposit-modal')"><i class="ti ti-wallet"></i><span>Depósito</span></div>
+    <div class="resp-menu-item" onclick="goPage('profile-page',this)"><i class="ti ti-user"></i><span>Perfil</span></div>
+    <div class="resp-menu-item" onclick="goPage('settings-page',this)"><i class="ti ti-settings"></i><span>Config</span></div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="login-modal">
+  <div class="modal-box">
+    <h3>Entrar <button class="modal-close" onclick="closeModal('login-modal')">×</button></h3>
+    <div class="field-group"><label>E-mail ou CPF</label><input type="text" placeholder="seu@email.com"></div>
+    <div class="field-group"><label>Senha</label><input type="password" placeholder="••••••••"></div>
+    <button class="btn-gold" style="width:100%;padding:10px;margin-bottom:8px" onclick="doLogin()">Entrar</button>
+    <div style="text-align:center;font-size:11px;color:var(--text3)">Esqueceu a senha? <span style="color:var(--blue);cursor:pointer">Recuperar</span></div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="register-modal">
+  <div class="modal-box">
+    <h3>Criar conta <button class="modal-close" onclick="closeModal('register-modal')">×</button></h3>
+    <div class="field-group"><label>Nome completo</label><input type="text" placeholder="João da Silva"></div>
+    <div class="field-group"><label>CPF</label><input type="text" placeholder="000.000.000-00"></div>
+    <div class="field-group"><label>E-mail</label><input type="text" placeholder="seu@email.com"></div>
+    <div class="field-group"><label>Senha</label><input type="password" placeholder="Mínimo 8 caracteres"></div>
+    <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:12px">
+      <input type="checkbox" id="terms-check" style="margin-top:2px">
+      <label for="terms-check" style="font-size:11px;color:var(--text3)">Concordo com os <span style="color:var(--blue);cursor:pointer">Termos de Uso</span> e confirmo que tenho 18+ anos</label>
+    </div>
+    <button class="btn-gold" style="width:100%;padding:10px" onclick="doRegister()">Criar conta</button>
+  </div>
+</div>
+
+<div class="modal-wrap" id="deposit-modal">
+  <div class="modal-box">
+    <h3>Depositar via Pix <button class="modal-close" onclick="closeModal('deposit-modal')">×</button></h3>
+    <p style="font-size:11px;color:var(--text3);margin-bottom:12px">Processamento instantâneo. Mínimo R$10.</p>
+    <div class="amount-chips">
+      <div class="achip on" onclick="selAmt(this,25)">R$25</div>
+      <div class="achip" onclick="selAmt(this,50)">R$50</div>
+      <div class="achip" onclick="selAmt(this,100)">R$100</div>
+      <div class="achip" onclick="selAmt(this,200)">R$200</div>
+      <div class="achip" onclick="selAmt(this,500)">R$500</div>
+    </div>
+    <div style="background:var(--bg3);border-radius:7px;height:110px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+      <svg width="80" height="80" viewBox="0 0 80 80"><rect x="0" y="0" width="9" height="9" fill="#e6edf3"/><rect x="9" y="0" width="9" height="9" fill="#0d1117"/><rect x="18" y="0" width="9" height="9" fill="#e6edf3"/><rect x="36" y="0" width="9" height="9" fill="#e6edf3"/><rect x="45" y="0" width="9" height="9" fill="#0d1117"/><rect x="62" y="0" width="9" height="9" fill="#e6edf3"/><rect x="71" y="0" width="9" height="9" fill="#e6edf3"/><rect x="0" y="9" width="9" height="9" fill="#e6edf3"/><rect x="18" y="9" width="9" height="9" fill="#e6edf3"/><rect x="27" y="9" width="9" height="9" fill="#0d1117"/><rect x="53" y="9" width="9" height="9" fill="#0d1117"/><rect x="62" y="9" width="9" height="9" fill="#e6edf3"/><rect x="0" y="18" width="9" height="9" fill="#e6edf3"/><rect x="9" y="18" width="9" height="9" fill="#0d1117"/><rect x="18" y="18" width="9" height="9" fill="#e6edf3"/><rect x="36" y="18" width="9" height="9" fill="#0d1117"/><rect x="53" y="18" width="9" height="9" fill="#e6edf3"/><rect x="62" y="18" width="9" height="9" fill="#e6edf3"/><rect x="71" y="18" width="9" height="9" fill="#0d1117"/><rect x="0" y="27" width="9" height="9" fill="#0d1117"/><rect x="18" y="27" width="9" height="9" fill="#0d1117"/><rect x="36" y="27" width="9" height="9" fill="#e6edf3"/><rect x="45" y="27" width="9" height="9" fill="#0d1117"/><rect x="62" y="27" width="9" height="9" fill="#e6edf3"/><rect x="9" y="36" width="9" height="9" fill="#e6edf3"/><rect x="27" y="36" width="9" height="9" fill="#0d1117"/><rect x="45" y="36" width="9" height="9" fill="#e6edf3"/><rect x="53" y="36" width="9" height="9" fill="#0d1117"/><rect x="0" y="45" width="9" height="9" fill="#e6edf3"/><rect x="18" y="45" width="9" height="9" fill="#e6edf3"/><rect x="36" y="45" width="9" height="9" fill="#0d1117"/><rect x="62" y="45" width="9" height="9" fill="#0d1117"/><rect x="71" y="45" width="9" height="9" fill="#e6edf3"/><rect x="0" y="54" width="9" height="9" fill="#0d1117"/><rect x="9" y="54" width="9" height="9" fill="#e6edf3"/><rect x="27" y="54" width="9" height="9" fill="#e6edf3"/><rect x="53" y="54" width="9" height="9" fill="#0d1117"/><rect x="62" y="54" width="9" height="9" fill="#e6edf3"/><rect x="0" y="62" width="9" height="9" fill="#e6edf3"/><rect x="18" y="62" width="9" height="9" fill="#0d1117"/><rect x="36" y="62" width="9" height="9" fill="#e6edf3"/><rect x="53" y="62" width="9" height="9" fill="#e6edf3"/><rect x="71" y="62" width="9" height="9" fill="#e6edf3"/><rect x="0" y="71" width="9" height="9" fill="#e6edf3"/><rect x="9" y="71" width="9" height="9" fill="#0d1117"/><rect x="27" y="71" width="9" height="9" fill="#e6edf3"/><rect x="36" y="71" width="9" height="9" fill="#0d1117"/><rect x="53" y="71" width="9" height="9" fill="#0d1117"/><rect x="62" y="71" width="9" height="9" fill="#e6edf3"/><rect x="71" y="71" width="9" height="9" fill="#0d1117"/></svg>
+    </div>
+    <div class="pix-code">00020126580014br.gov.bcb.pix0136bettop-pix-key-uuid-demo5204000053039865802BR5925BetTop Pagamentos Ltda6009SAO PAULO62070503***6304A1B2</div>
+    <button class="btn-gold" style="width:100%;padding:9px" onclick="doDeposit()">Confirmar pagamento</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const GAMES=[
+  {id:1,league:'Brasileirão Série A',live:true,min:67,t1:'Flamengo',t2:'Palmeiras',s1:1,s2:1,odds:[{l:'1',v:2.35},{l:'X',v:3.10},{l:'2',v:3.05}]},
+  {id:2,league:'Champions League',live:true,min:34,t1:'Real Madrid',t2:'Man City',s1:0,s2:0,odds:[{l:'1',v:2.10},{l:'X',v:3.40},{l:'2',v:3.20}]},
+  {id:3,league:'Premier League',live:true,min:52,t1:'Arsenal',t2:'Chelsea',s1:2,s2:1,odds:[{l:'1',v:1.75},{l:'X',v:3.60},{l:'2',v:4.50}]},
+  {id:4,league:'La Liga',live:true,min:18,t1:'Barcelona',t2:'Atletico',s1:1,s2:0,odds:[{l:'1',v:1.65},{l:'X',v:3.80},{l:'2',v:5.20}]},
+];
+const SOON=[
+  {id:5,league:'Brasileirão Série A',live:false,time:'18:30',t1:'São Paulo',t2:'Corinthians',odds:[{l:'1',v:2.20},{l:'X',v:3.00},{l:'2',v:3.40}]},
+  {id:6,league:'Champions League',live:false,time:'21:00',t1:'PSG',t2:'Bayern Munich',odds:[{l:'1',v:2.60},{l:'X',v:3.30},{l:'2',v:2.55}]},
+  {id:7,league:'Premier League',live:false,time:'16:00',t1:'Liverpool',t2:'Man United',odds:[{l:'1',v:1.90},{l:'X',v:3.50},{l:'2',v:4.00}]},
+];
+const HIST=[
+  {match:'Flamengo vs Vasco',sel:'Flamengo',odd:2.10,stake:50,result:'win'},
+  {match:'Real Madrid vs PSG',sel:'Empate',odd:3.40,stake:20,result:'lost'},
+  {match:'Arsenal vs Tottenham',sel:'Arsenal',odd:1.85,stake:30,result:'open'},
+  {match:'Palmeiras vs Gremio',sel:'Palmeiras',odd:1.60,stake:100,result:'win'},
+  {match:'Brasil vs Argentina',sel:'Brasil',odd:2.30,stake:40,result:'lost'},
+];
+const CASHOUT=[
+  {match:'Arsenal vs Chelsea',sel:'Arsenal',odd:1.75,stake:30,cashoutVal:42,status:'live'},
+  {match:'Champions League Final',sel:'Real Madrid',odd:2.10,stake:50,cashoutVal:85,status:'win'},
+];
+
+let bets={},loggedIn=false,balance=500,selAmtVal=25;
+
+function makeGameCard(g,soon){
+  const scoreHtml=g.live?`<div style="display:flex;justify-content:space-between;padding:2px 0"><span class="team-name">${g.t1}</span><span class="team-score">${g.s1}</span></div><div style="display:flex;justify-content:space-between;padding:2px 0"><span class="team-name">${g.t2}</span><span class="team-score">${g.s2}</span></div>`:`<div class="team-row"><span class="team-name">${g.t1}</span></div><div class="team-row"><span class="team-name">${g.t2}</span></div>`;
+  const oddsHtml=g.odds.map((o,i)=>{const k=`${g.id}_${i}`;const s=bets[k]?'sel':'';return`<div class="odd ${s}" onclick="toggleOdd(${g.id},${i},'${o.l}',${o.v},'${g.t1} vs ${g.t2}')"><span class="ol">${o.l}</span><span class="ov">${o.v.toFixed(2)}</span></div>`;}).join('');
+  const timeHtml=g.live?`<span class="gc-time live">${g.min}'</span>`:`<span class="gc-time">${g.time}</span>`;
+  return`<div class="gc"><div class="gc-meta"><span class="gc-league">${g.league}</span>${timeHtml}</div><div class="teams-block">${scoreHtml}</div><div class="odds-row">${oddsHtml}</div></div>`;
+}
+
+function renderGames(){
+  document.getElementById('games-grid').innerHTML=GAMES.map(g=>makeGameCard(g,false)).join('');
+  document.getElementById('games-grid-soon').innerHTML=SOON.map(g=>makeGameCard(g,true)).join('');
+}
+
+function renderHist(){
+  document.getElementById('hist-list').innerHTML=HIST.map(h=>{
+    const r=h.result;const rv=r==='win'?`+R$${(h.odd*h.stake).toFixed(2)}`:r==='lost'?`-R$${h.stake.toFixed(2)}`:`Em aberto`;
+    return`<div class="hist-item"><div class="hist-status ${r}"></div><div class="hist-info"><div class="hist-match">${h.match}</div><div class="hist-sel">${h.sel} @ ${h.odd.toFixed(2)}</div></div><div class="hist-right"><div class="hist-stake">Aposta: R$${h.stake.toFixed(2)}</div><div class="hist-result ${r}">${rv}</div></div></div>`;
+  }).join('');
+}
+
+function renderProfile(){
+  const wins=HIST.filter(h=>h.result==='win').length;
+  const total=HIST.filter(h=>h.result!=='open').length;
+  const profit=HIST.reduce((a,h)=>h.result==='win'?a+(h.odd*h.stake-h.stake):h.result==='lost'?a-h.stake:a,0);
+  document.getElementById('profile-stats').innerHTML=`
+    <div class="stat-card"><div class="sc-label">Saldo disponível</div><div class="sc-val gold">R$${balance.toFixed(2)}</div></div>
+    <div class="stat-card"><div class="sc-label">Taxa de acerto</div><div class="sc-val ${wins/total>.5?'green':'red'}">${total?Math.round(wins/total*100):0}%</div></div>
+    <div class="stat-card"><div class="sc-label">Total apostado</div><div class="sc-val">R$${HIST.reduce((a,h)=>a+h.stake,0).toFixed(2)}</div></div>
+    <div class="stat-card"><div class="sc-label">Lucro/Prejuízo</div><div class="sc-val ${profit>=0?'green':'red'}">${profit>=0?'+':''}R$${profit.toFixed(2)}</div></div>`;
+  document.getElementById('cashout-list').innerHTML=CASHOUT.map(c=>`<div class="cashout-bar"><div class="cashout-info"><div class="cashout-match">${c.match}</div><div class="cashout-sel">${c.sel} @ ${c.odd.toFixed(2)}</div><div class="cashout-status ${c.status}">${c.status==='live'?'Ao vivo':'Possível ganho'}</div></div><button class="btn-cashout" onclick="doCashout(${c.cashoutVal})">Cashout R$${c.cashoutVal.toFixed(2)}</button></div>`).join('');
+}
+
+function toggleOdd(gid,oi,label,val,match){
+  const k=`${gid}_${oi}`;
+  if(bets[k]){delete bets[k];}
+  else{Object.keys(bets).forEach(b=>{if(b.startsWith(gid+'_'))delete bets[b];});bets[k]={gid,oi,label,val,match};}
+  renderGames();renderBets();
+}
+
+function renderBets(){
+  const list=Object.values(bets);
+  document.getElementById('bs-count').textContent=list.length;
+  const body=document.getElementById('bs-body');
+  const empty=document.getElementById('bs-empty');
+  const footer=document.getElementById('bs-footer');
+  if(!list.length){body.innerHTML='';body.appendChild(empty);empty.style.display='flex';footer.style.display='none';return;}
+  empty.style.display='none';
+  body.innerHTML=list.map(b=>`<div class="bet-item"><button class="bet-remove" onclick="removeBet('${b.gid}_${b.oi}')">×</button><div class="bet-match">${b.match}</div><div class="bet-sel">${b.label==='1'?b.match.split(' vs ')[0]:b.label==='2'?b.match.split(' vs ')[1]:'Empate'}</div><div class="bet-odd">Odd: ${b.val.toFixed(2)}</div></div>`).join('');
+  body.appendChild(empty);
+  footer.style.display='block';
+  calcWin();
+}
+
+function removeBet(k){delete bets[k];renderGames();renderBets();}
+function clearBets(){bets={};renderGames();renderBets();}
+
+function calcWin(){
+  const stake=parseFloat(document.getElementById('stake-inp').value)||0;
+  const list=Object.values(bets);
+  const tot=list.reduce((a,b)=>a*b.val,1);
+  document.getElementById('total-odd').textContent=tot.toFixed(2);
+  document.getElementById('pwin').textContent='R$ '+(stake*tot).toFixed(2).replace('.',',');
+}
+
+function setStake(v){document.getElementById('stake-inp').value=v;calcWin();}
+
+function placeBet(){
+  if(!loggedIn){showToast('Faça login para apostar!','err');return;}
+  const stake=parseFloat(document.getElementById('stake-inp').value)||0;
+  if(stake<1){showToast('Valor mínimo: R$1,00','err');return;}
+  if(stake>balance){showToast('Saldo insuficiente!','err');return;}
+  balance-=stake;
+  HIST.unshift({match:Object.values(bets)[0]?.match||'Nova aposta',sel:Object.values(bets)[0]?.label||'',odd:Object.values(bets).reduce((a,b)=>a*b.val,1),stake,result:'open'});
+  updateBalance();bets={};renderGames();renderBets();renderProfile();renderHist();
+  showToast('Aposta confirmada! Boa sorte!','ok');
+}
+
+function doLogin(){loggedIn=true;balance=500;updateTopbar();closeModal('login-modal');renderProfile();showToast('Bem-vindo de volta!','ok');}
+function doRegister(){loggedIn=true;balance=0;updateTopbar();closeModal('register-modal');openModal('deposit-modal');}
+
+function updateTopbar(){
+  document.getElementById('topbar-right').innerHTML=`<div class="balance-chip" onclick="openModal('deposit-modal')"><i class="ti ti-wallet" aria-hidden="true" style="font-size:13px"></i><span id="bal-el">R$${balance.toFixed(2)}</span></div><div class="avatar" onclick="goPage('profile-page')">JV</div>`;
+}
+function updateBalance(){const e=document.getElementById('bal-el');if(e)e.textContent='R$'+balance.toFixed(2);}
+
+function doCashout(v){balance+=v;updateBalance();renderProfile();showToast(`Cashout de R$${v.toFixed(2)} realizado!`,'ok');}
+
+function doDeposit(){balance+=selAmtVal;updateBalance();closeModal('deposit-modal');renderProfile();showToast(`R$${selAmtVal},00 depositado via Pix!`,'ok');}
+function selAmt(el,v){document.querySelectorAll('.achip').forEach(c=>c.classList.remove('on'));el.classList.add('on');selAmtVal=v;}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const pg=document.getElementById(id);if(pg)pg.classList.add('on');
+  if(el){document.querySelectorAll('.resp-menu-item').forEach(r=>r.classList.remove('on'));el.classList.add('on');}
+  if(id==='hist-page')renderHist();
+  if(id==='profile-page')renderProfile();
+  if(id==='promos-page'){document.querySelectorAll('.snav').forEach(s=>s.classList.remove('on'));}
+}
+
+function setSnav(el,sport){
+  document.querySelectorAll('.snav').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  if(sport==='promos')goPage('promos-page');
+  else goPage('home-page');
+}
+function setSitem(el){document.querySelectorAll('.sitem').forEach(s=>s.classList.remove('on'));el.classList.add('on');}
+function setTab(el){const parent=el.parentElement;parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='ok'?'#238636':type==='err'?'#b91c1c':'#b18700';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+renderGames();renderHist();renderProfile();
+
+setInterval(()=>{
+  GAMES.filter(g=>g.live).forEach(g=>{
+    if(g.min<90)g.min++;
+    if(Math.random()<.06){if(Math.random()<.5)g.s1++;else g.s2++;}
+    g.odds=g.odds.map(o=>({...o,v:Math.max(1.05,+(o.v+(Math.random()-.5)*.08).toFixed(2))}));
+  });
+  renderGames();
+},12000);
+</script>
